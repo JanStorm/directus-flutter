@@ -1,4 +1,4 @@
-# directus_flutter_core
+# directus_flutter
 
 A Flutter plugin to render contents of [directus](https://directus.io/) headless cms API. 
 
