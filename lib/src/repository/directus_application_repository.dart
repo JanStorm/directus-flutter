@@ -1,18 +1,11 @@
 import 'package:directus_flutter/src/api/api.dart';
+import 'package:directus_flutter/src/api/api_config.dart';
 
 class DirectusApplicationRepository {
 
-  static const BASE_URL = 'demo.directus.io';
-  static const PROJECT = 'thumper';
-
-  static const AUTH_CREDENTIALS = {
-    'email': 'admin@example.com',
-    'password': 'password'
-  };
-
-  static Future<List> getCollections() async {
-    DirectusApi api = new DirectusApi(BASE_URL, PROJECT);
-    await api.authenticate(AUTH_CREDENTIALS);
+  static Future<List> getCollections(DirectusApiConfig config) async {
+    DirectusApi api = new DirectusApi(config.host, config.project);
+    await api.authenticate(config.getAuthCredentials());
     return await api.getCollections();
   }
 }

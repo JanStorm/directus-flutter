@@ -1,11 +1,13 @@
+import 'package:directus_flutter/directus_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ListItemsScreen extends StatelessWidget {
 
   final Map collection;
+  final DirectusApiConfig _apiConfig;
 
-  const ListItemsScreen({Key key, this.collection}) : super(key: key);
+  const ListItemsScreen(this._apiConfig, this.collection, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
