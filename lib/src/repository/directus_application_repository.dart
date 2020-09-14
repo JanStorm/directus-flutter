@@ -8,4 +8,10 @@ class DirectusApplicationRepository {
     await api.authenticate(config.getAuthCredentials());
     return await api.getCollections();
   }
+
+  static Future<List> getItems(DirectusApiConfig config, String collection) async {
+    DirectusApi api = new DirectusApi(config.host, config.project);
+    await api.authenticate(config.getAuthCredentials());
+    return await api.getItems(collection);
+  }
 }

@@ -38,7 +38,7 @@ class ListCollectionsScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => ListItemsScreen(_apiConfig, data)),
                   );
                 },
-              )).toList(growable: false);
+              )).toList();
               return Column(
                 mainAxisSize: MainAxisSize.max,
                 children: children,
