@@ -5,6 +5,6 @@ import 'package:flutter/widgets.dart';
 class DirectusTextarea extends AbstractDirectusWidgetState {
   @override
   Widget build(BuildContext context) {
-    return Text(widget.config['data'].toString());
+    return Text(widget.data.toString());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:directus_flutter/directus_flutter.dart';
+import 'package:example/src/screen/show_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,10 +38,10 @@ class ListItemsScreen extends StatelessWidget {
                     title: Text("ID ${data['id']}"),
                     subtitle: Text(data['note'] ?? ''),
                     onTap: () {
-                      //Navigator.push(
-                      //  context,
-                      //  MaterialPageRoute(builder: (context) => ListItemScreen(_apiConfig, data)),
-                      //);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ShowItemScreen(_apiConfig, collection, data)),
+                      );
                     },
                   )).toList();
                   return Column(

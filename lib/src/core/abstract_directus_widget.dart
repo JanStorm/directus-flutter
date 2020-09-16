@@ -4,8 +4,9 @@ import 'package:flutter/widgets.dart';
 
 class DirectusWidget extends StatefulWidget {
   final Map config;
+  final dynamic data;
 
-  DirectusWidget(this.config);
+  DirectusWidget(this.config, this.data);
 
   @override
   State<StatefulWidget> createState() {

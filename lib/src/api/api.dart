@@ -8,6 +8,7 @@ class DirectusApi implements AbstractDirectusApi {
   static const ROUTE_AUTH = '/auth/authenticate';
   static const ROUTE_COLLECTIONS = '/collections';
   static const ROUTE_ITEMS = '/items/:collection';
+  static const ROUTE_ITEM = '/items/:collection/:id';
 
   final String project, baseUrl;
   final Map authCredentials;
@@ -63,8 +64,17 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<Map> getItem(String collection, int id) async {
-    // TODO: implement getItem
-    throw UnimplementedError();
+    if(accessToken == null) {
+      throw new Exception('You have to be authorized to use this method!');
+    }
+    String path = prependProject(ROUTE_ITEM
+        .replaceAll(':collection', collection)
+        .replaceAll(':id', id.toString())
+    );
+    ApiRequest request = new ApiRequest(baseUrl, path);
+    request = await addAuthToken(request);
+    String responseBody = (await _GET(request)).body;
+    return await jsonDecode(responseBody)['data'];
   }
 
   @override
