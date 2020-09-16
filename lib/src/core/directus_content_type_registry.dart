@@ -1,3 +1,4 @@
+import 'package:directus_flutter/src/content_type/status.dart';
 import 'package:directus_flutter/src/content_type/textarea.dart';
 
 import 'abstract_directus_widget.dart';
@@ -11,6 +12,7 @@ class DirectusContentTypeRegistry {
   DirectusContentTypeRegistry._internal();
 
   Map<String, AbstractDirectusWidgetState> contentTypes = {
-    'textarea': DirectusTextarea()
+    'textarea': DirectusTextarea(),
+    'status': DirectusStatus(),
   };
 }
