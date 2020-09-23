@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:directus_flutter/src/api/abstract_api.dart';
+import 'package:directus_flutter/src/api/api_filter.dart';
 import 'package:directus_flutter/src/api/api_request.dart';
 import 'package:http/http.dart' as http;
 
@@ -66,10 +67,11 @@ class DirectusApi implements AbstractDirectusApi {
   }
 
   @override
-  Future<List> getCollections() async {
+  Future<List> getCollections({List<ApiFilter> filter}) async {
     if(accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
+    await getAuthToken();
 
     ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
     request.setAccessToken(accessToken);
@@ -96,7 +98,7 @@ class DirectusApi implements AbstractDirectusApi {
   }
 
   @override
-  Future<List> getItems(String collection) async {
+  Future<List> getItems(String collection, {List<ApiFilter> filter}) async {
     if(accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
