@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 abstract class AbstractDirectusApi {
   Future<bool> authenticate(Map credentials);
 
+  Future<Map> getCurrentUser();
+
   Future<List> getCollections();
   Future<Map> getCollection(int id);
 

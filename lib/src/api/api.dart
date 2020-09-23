@@ -9,6 +9,7 @@ class DirectusApi implements AbstractDirectusApi {
   static const ROUTE_COLLECTIONS = '/collections';
   static const ROUTE_ITEMS = '/items/:collection';
   static const ROUTE_ITEM = '/items/:collection/:id';
+  static const ROUTE_USERS_ME = '/users/me';
 
   final String project, host;
   final Map authCredentials;
@@ -40,6 +41,17 @@ class DirectusApi implements AbstractDirectusApi {
       print(e.toString());
       return false;
     }
+  }
+
+  @override
+  Future<Map> getCurrentUser() async {
+    if(accessToken == null) {
+      throw new Exception('You have to be authorized to use this method!');
+    }
+    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_USERS_ME), method: RequestMethod.GET);
+    request = await addAuthToken(request);
+    http.Response response = await processRequest(request);
+    return jsonDecode(response.body);
   }
 
   @override
