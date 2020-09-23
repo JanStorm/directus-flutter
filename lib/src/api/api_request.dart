@@ -12,6 +12,11 @@ class ApiRequest {
     this.query = this.query ?? {};
   }
 
+  ApiRequest setAccessToken(String accessToken) {
+    query['access_token'] ??= accessToken;
+    return this;
+  }
+
   Uri getUri() {
     return Uri.https(host, path, query);
   }

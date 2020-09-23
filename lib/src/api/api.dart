@@ -17,12 +17,11 @@ class DirectusApi implements AbstractDirectusApi {
 
   DirectusApi(this.host, this.project, {this.authCredentials});
 
-  Future<ApiRequest> addAuthToken(ApiRequest request) async {
+  Future<String> getAuthToken() async {
     if(accessToken == null) {
       await authenticate(authCredentials);
     }
-    request.query['access_token'] ??= accessToken;
-    return request;
+    return accessToken;
   }
 
   String prependProject(String path) {
@@ -48,16 +47,20 @@ class DirectusApi implements AbstractDirectusApi {
     if(accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
+    await getAuthToken();
+
     ApiRequest request = new ApiRequest(host, prependProject(ROUTE_USERS_ME), method: RequestMethod.GET);
-    request = await addAuthToken(request);
+    request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     return jsonDecode(response.body);
   }
 
   @override
   Future<Map> getCollection(int id) async {
+    await getAuthToken();
+
     ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
-    request = await addAuthToken(request);
+    request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     return jsonDecode(response.body);
   }
@@ -69,7 +72,8 @@ class DirectusApi implements AbstractDirectusApi {
     }
 
     ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
-    request = await addAuthToken(request);
+    request.setAccessToken(accessToken);
+    request.addFilter(filter);
     String responseBody = (await processRequest(request)).body;
     return await jsonDecode(responseBody)['data'];
   }
@@ -79,12 +83,14 @@ class DirectusApi implements AbstractDirectusApi {
     if(accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
+    await getAuthToken();
+
     String path = prependProject(ROUTE_ITEM
         .replaceAll(':collection', collection)
         .replaceAll(':id', id.toString())
     );
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
-    request = await addAuthToken(request);
+    request.setAccessToken(accessToken);
     String responseBody = (await processRequest(request)).body;
     return await jsonDecode(responseBody)['data'];
   }
@@ -94,9 +100,12 @@ class DirectusApi implements AbstractDirectusApi {
     if(accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
+    await getAuthToken();
+
     String path = prependProject(ROUTE_ITEMS.replaceAll(':collection', collection));
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
-    request = await addAuthToken(request);
+    request.addFilter(filter);
+    request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     String responseBody = response.body;
     return await jsonDecode(responseBody)['data'];
@@ -104,6 +113,8 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<http.Response> processRequest(ApiRequest request) async {
+    // Enable this line if you want so log all network traffic to directus
+    // debugPrint("[NETWORKING] ${request.method} ${request.getUri()}");
     http.Response response;
     switch(request.method) {
       case RequestMethod.GET:
