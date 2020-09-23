@@ -93,7 +93,7 @@ class DirectusApi implements AbstractDirectusApi {
     request.setAccessToken(accessToken);
     request.addFilter(filter);
     String responseBody = (await processRequest(request)).body;
-    return await jsonDecode(responseBody)['data'];
+    return await jsonDecode(responseBody)['data'] ?? [];
   }
 
   @override
@@ -128,7 +128,7 @@ class DirectusApi implements AbstractDirectusApi {
     request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     String responseBody = response.body;
-    return await jsonDecode(responseBody)['data'];
+    return await jsonDecode(responseBody)['data'] ?? [];
   }
 
   @override
@@ -168,6 +168,7 @@ class DirectusApi implements AbstractDirectusApi {
         break;
     }
 
+    // TODO error check / handling
     return response;
   }
 }
