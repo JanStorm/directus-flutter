@@ -10,11 +10,11 @@ class DirectusApi implements AbstractDirectusApi {
   static const ROUTE_ITEMS = '/items/:collection';
   static const ROUTE_ITEM = '/items/:collection/:id';
 
-  final String project, baseUrl;
+  final String project, host;
   final Map authCredentials;
   String accessToken;
 
-  DirectusApi(this.baseUrl, this.project, {this.authCredentials});
+  DirectusApi(this.host, this.project, {this.authCredentials});
 
   Future<ApiRequest> addAuthToken(ApiRequest request) async {
     if(accessToken == null) {
@@ -30,9 +30,9 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<bool> authenticate(Map credentials) async {
-    ApiRequest request = new ApiRequest(baseUrl, prependProject(ROUTE_AUTH));
+    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_AUTH), method: RequestMethod.POST);
     request.data = authCredentials ?? credentials;
-    http.Response response = await _POST(request);
+    http.Response response = await processRequest(request);
     try {
       accessToken = jsonDecode(response.body)['data']['token'];
       return true;
@@ -44,10 +44,10 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<Map> getCollection(int id) async {
-    ApiRequest request = new ApiRequest(baseUrl, prependProject(ROUTE_COLLECTIONS));
+    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
     request = await addAuthToken(request);
-    http.Response response = await _GET(request);
-
+    http.Response response = await processRequest(request);
+    return jsonDecode(response.body);
   }
 
   @override
@@ -56,9 +56,9 @@ class DirectusApi implements AbstractDirectusApi {
       throw new Exception('You have to be authorized to use this method!');
     }
 
-    ApiRequest request = new ApiRequest(baseUrl, prependProject(ROUTE_COLLECTIONS));
+    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
     request = await addAuthToken(request);
-    String responseBody = (await _GET(request)).body;
+    String responseBody = (await processRequest(request)).body;
     return await jsonDecode(responseBody)['data'];
   }
 
@@ -71,9 +71,9 @@ class DirectusApi implements AbstractDirectusApi {
         .replaceAll(':collection', collection)
         .replaceAll(':id', id.toString())
     );
-    ApiRequest request = new ApiRequest(baseUrl, path);
+    ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request = await addAuthToken(request);
-    String responseBody = (await _GET(request)).body;
+    String responseBody = (await processRequest(request)).body;
     return await jsonDecode(responseBody)['data'];
   }
 
@@ -83,17 +83,34 @@ class DirectusApi implements AbstractDirectusApi {
       throw new Exception('You have to be authorized to use this method!');
     }
     String path = prependProject(ROUTE_ITEMS.replaceAll(':collection', collection));
-    ApiRequest request = new ApiRequest(baseUrl, path);
+    ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request = await addAuthToken(request);
-    String responseBody = (await _GET(request)).body;
+    http.Response response = await processRequest(request);
+    String responseBody = response.body;
     return await jsonDecode(responseBody)['data'];
   }
 
-  Future<http.Response> _GET(ApiRequest request) {
-    return http.get(request.getUri(), headers: request.headers);
-  }
+  @override
+  Future<http.Response> processRequest(ApiRequest request) async {
+    http.Response response;
+    switch(request.method) {
+      case RequestMethod.GET:
+        response = await http.get(request.getUri(), headers: request.headers);
+        break;
+      case RequestMethod.POST:
+        response = await http.post(request.getUri(), headers: request.headers, body: request.data);
+        break;
+      case RequestMethod.PATCH:
+        response = await http.patch(request.getUri(), headers: request.headers, body: request.data);
+        break;
+      case RequestMethod.DELETE:
+        response = await http.delete(request.getUri(), headers: request.headers);
+        break;
+      default:
+        throw Exception("This Request Methods are currently not supported");
+        break;
+    }
 
-  Future<http.Response> _POST(ApiRequest request) {
-    return http.post(request.getUri(), headers: request.headers, body: request.data);
+    return response;
   }
 }
