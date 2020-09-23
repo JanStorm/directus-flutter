@@ -1,5 +1,5 @@
-import 'package:directus_flutter/src/content_type/textarea.dart';
 import 'package:directus_flutter/directus_flutter.dart';
+import 'package:directus_flutter/src/content_type/textarea.dart';
 import 'package:flutter/widgets.dart';
 
 class DirectusWidget extends StatefulWidget {
