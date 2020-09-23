@@ -19,7 +19,7 @@ class DirectusApi implements AbstractDirectusApi {
   DirectusApi(this.host, this.project, {this.authCredentials});
 
   Future<String> getAuthToken() async {
-    if(accessToken == null) {
+    if (accessToken == null) {
       await authenticate(authCredentials);
     }
     return accessToken;
@@ -31,13 +31,17 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<bool> authenticate(Map credentials) async {
-    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_AUTH), method: RequestMethod.POST);
+    ApiRequest request = new ApiRequest(
+      host,
+      prependProject(ROUTE_AUTH),
+      method: RequestMethod.POST,
+    );
     request.data = authCredentials ?? credentials;
     http.Response response = await processRequest(request);
     try {
       accessToken = jsonDecode(response.body)['data']['token'];
       return true;
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return false;
     }
@@ -45,12 +49,16 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<Map> getCurrentUser() async {
-    if(accessToken == null) {
+    if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
     await getAuthToken();
 
-    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_USERS_ME), method: RequestMethod.GET);
+    ApiRequest request = new ApiRequest(
+      host,
+      prependProject(ROUTE_USERS_ME),
+      method: RequestMethod.GET,
+    );
     request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     return jsonDecode(response.body);
@@ -60,7 +68,11 @@ class DirectusApi implements AbstractDirectusApi {
   Future<Map> getCollection(int id) async {
     await getAuthToken();
 
-    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
+    ApiRequest request = new ApiRequest(
+      host,
+      prependProject(ROUTE_COLLECTIONS),
+      method: RequestMethod.GET,
+    );
     request.setAccessToken(accessToken);
     http.Response response = await processRequest(request);
     return jsonDecode(response.body);
@@ -68,12 +80,16 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<List> getCollections({List<ApiFilter> filter}) async {
-    if(accessToken == null) {
+    if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
     await getAuthToken();
 
-    ApiRequest request = new ApiRequest(host, prependProject(ROUTE_COLLECTIONS), method: RequestMethod.GET);
+    ApiRequest request = new ApiRequest(
+      host,
+      prependProject(ROUTE_COLLECTIONS),
+      method: RequestMethod.GET,
+    );
     request.setAccessToken(accessToken);
     request.addFilter(filter);
     String responseBody = (await processRequest(request)).body;
@@ -82,14 +98,15 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<Map> getItem(String collection, int id) async {
-    if(accessToken == null) {
+    if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
     await getAuthToken();
 
-    String path = prependProject(ROUTE_ITEM
-        .replaceAll(':collection', collection)
-        .replaceAll(':id', id.toString())
+    String path = prependProject(
+      ROUTE_ITEM
+          .replaceAll(':collection', collection)
+          .replaceAll(':id', id.toString()),
     );
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request.setAccessToken(accessToken);
@@ -99,12 +116,13 @@ class DirectusApi implements AbstractDirectusApi {
 
   @override
   Future<List> getItems(String collection, {List<ApiFilter> filter}) async {
-    if(accessToken == null) {
+    if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
     await getAuthToken();
 
-    String path = prependProject(ROUTE_ITEMS.replaceAll(':collection', collection));
+    String path =
+        prependProject(ROUTE_ITEMS.replaceAll(':collection', collection));
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request.addFilter(filter);
     request.setAccessToken(accessToken);
@@ -118,18 +136,32 @@ class DirectusApi implements AbstractDirectusApi {
     // Enable this line if you want so log all network traffic to directus
     // debugPrint("[NETWORKING] ${request.method} ${request.getUri()}");
     http.Response response;
-    switch(request.method) {
+    switch (request.method) {
       case RequestMethod.GET:
-        response = await http.get(request.getUri(), headers: request.headers);
+        response = await http.get(
+          request.getUri(),
+          headers: request.headers,
+        );
         break;
       case RequestMethod.POST:
-        response = await http.post(request.getUri(), headers: request.headers, body: request.data);
+        response = await http.post(
+          request.getUri(),
+          headers: request.headers,
+          body: request.data,
+        );
         break;
       case RequestMethod.PATCH:
-        response = await http.patch(request.getUri(), headers: request.headers, body: request.data);
+        response = await http.patch(
+          request.getUri(),
+          headers: request.headers,
+          body: request.data,
+        );
         break;
       case RequestMethod.DELETE:
-        response = await http.delete(request.getUri(), headers: request.headers);
+        response = await http.delete(
+          request.getUri(),
+          headers: request.headers,
+        );
         break;
       default:
         throw Exception("This Request Methods are currently not supported");

@@ -18,7 +18,8 @@ class DirectusWidget extends StatefulWidget {
       debugPrint("[WARN] Using textarea as default.");
     }
 
-    return DirectusContentTypeRegistry().contentTypes[interface] ?? DirectusTextarea();
+    return DirectusContentTypeRegistry().contentTypes[interface] ??
+        DirectusTextarea();
   }
 }
 

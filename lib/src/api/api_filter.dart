@@ -1,6 +1,5 @@
 /// See filters at https://docs.directus.io/api/query/filter.html
 class ApiFilter {
-
   final String field;
   String _operator, _value;
 
@@ -181,13 +180,13 @@ class ApiFilter {
   /// Get as Map Entry. Since filter is used only as GET-Parameter,
   /// use this function to apply this filter into the queryParameters map
   /// of your request.
-  MapEntry<String,String> getMapEntry() {
+  MapEntry<String, String> getMapEntry() {
     return MapEntry('filter[$field][$_operator]', this._value);
   }
 
   /// Makes toString look like the single get request entry
   toString() {
-    MapEntry<String,String> mapEntry = getMapEntry();
+    MapEntry<String, String> mapEntry = getMapEntry();
     return "${mapEntry.key}=${mapEntry.value}";
   }
 }

@@ -3,8 +3,5 @@ class DirectusApiConfig {
 
   const DirectusApiConfig(this.host, this.project, this.email, this.password);
 
-  Map getAuthCredentials() => {
-    'email': email,
-    'password': password
-  };
+  Map getAuthCredentials() => {'email': email, 'password': password};
 }
