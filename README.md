@@ -1,11 +1,11 @@
 
 # directus_flutter
 
-A Flutter plugin to render contents of [directus](https://directus.io/) headless cms API.
+A Flutter plugin to receive and render contents of [directus](https://directus.io/) headless cms API.
 The main goal of this plugin is a support for rendering all basic interfaces from flutter.
 
-## :hammer_and_wrench: Under Development
-:construction: This project is currently under development and is not ready for use by anyone except those wishing to develop it.
+## :construction: Under Development
+This project is currently under development and is not ready for use by anyone except those wishing to develop it.
 
 ## :metal: Contribute
 Feel free to create a merge request if youre missing something!
