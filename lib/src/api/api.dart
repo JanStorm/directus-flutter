@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:directus_flutter/src/api/abstract_api.dart';
 import 'package:directus_flutter/src/api/api_filter.dart';
@@ -168,6 +169,20 @@ class DirectusApi implements AbstractDirectusApi {
       default:
         throw Exception("This Request Methods are currently not supported");
         break;
+    }
+
+    // Pre-process response data
+    if(response.headers[HttpHeaders.contentTypeHeader] == 'application/json') {
+      Map body = jsonDecode(response.body);
+      for(Map msg in body['messages'] ?? []) {
+        String text = '[directus_flutter]';
+        if(msg['type'] != null) text    += '[${msg['type'].toString().toUpperCase()}] ';
+        if(msg['code'] != null) text    += 'Code ${msg['code'].toString()} ';
+        if(msg['fields'] != null) text  += 'for fields ${msg['fields'].toString()}';
+        if(msg['message'] != null) text += ': ${msg['message']}. ';
+        text += '- Request was ${request.method} ${request.getUri()}';
+        print(text);
+      }
     }
 
     // TODO error check / handling
