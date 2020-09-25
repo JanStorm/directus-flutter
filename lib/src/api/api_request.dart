@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:directus_flutter/src/api/api_filter.dart';
 
 enum RequestMethod { GET, POST, PATCH, DELETE }
@@ -13,6 +15,10 @@ class ApiRequest {
       {this.data, this.headers, this.query, this.method = RequestMethod.GET}) {
     this.headers = this.headers ?? {};
     this.query = this.query ?? {};
+
+    if(this.headers[HttpHeaders.contentTypeHeader] == null) {
+      this.headers[HttpHeaders.contentTypeHeader] = 'application/json';
+    }
   }
 
   ApiRequest addFilter(List<ApiFilter> filter) {
