@@ -97,7 +97,7 @@ class DirectusApi implements AbstractDirectusApi {
   }
 
   @override
-  Future<Map> getItem(String collection, int id) async {
+  Future<Map> getItem(String collection, int id, {int depth = 3}) async {
     if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
@@ -110,12 +110,13 @@ class DirectusApi implements AbstractDirectusApi {
     );
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request.setAccessToken(accessToken);
+    request.setDepth(depth);
     String responseBody = (await processRequest(request)).body;
     return await jsonDecode(responseBody)['data'];
   }
 
   @override
-  Future<List> getItems(String collection, {List<ApiFilter> filter}) async {
+  Future<List> getItems(String collection, {List<ApiFilter> filter, int depth = 3}) async {
     if (accessToken == null) {
       throw new Exception('You have to be authorized to use this method!');
     }
@@ -126,6 +127,7 @@ class DirectusApi implements AbstractDirectusApi {
     ApiRequest request = new ApiRequest(host, path, method: RequestMethod.GET);
     request.addFilter(filter);
     request.setAccessToken(accessToken);
+    request.setDepth(depth);
     http.Response response = await processRequest(request);
     String responseBody = response.body;
     return await jsonDecode(responseBody)['data'] ?? [];

@@ -29,6 +29,19 @@ class ApiRequest {
     return this;
   }
 
+  ApiRequest setDepth(int depth) {
+    if(depth > 0) {
+      String fields = '*';
+      for(var i = 0; i < depth; i++) {
+        fields += '.*';
+      }
+      query.addAll({
+        'fields': fields,
+      });
+    }
+    return this;
+  }
+
   Uri getUri() {
     return Uri.https(host, path, query);
   }
