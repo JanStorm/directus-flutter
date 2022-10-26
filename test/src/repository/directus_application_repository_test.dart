@@ -1,7 +1,5 @@
 // Import the test package and Counter class
 import 'package:directus_flutter/directus_flutter.dart';
-import 'package:directus_flutter/src/api/api_config.dart';
-import 'package:directus_flutter/src/model/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 const demoApiConfig = DirectusApiConfig(

@@ -37,7 +37,7 @@ class DirectusApi implements AbstractDirectusApi {
       prependProject(ROUTE_AUTH),
       method: RequestMethod.POST,
     );
-    request.data = authCredentials ?? credentials;
+    request.data = jsonEncode(authCredentials ?? credentials);
     http.Response response = await processRequest(request);
     try {
       accessToken = jsonDecode(response.body)['data']['token'];
