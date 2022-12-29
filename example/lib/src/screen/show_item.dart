@@ -7,7 +7,7 @@ class ShowItemScreen extends StatelessWidget {
   final Map collection, item;
   final DirectusApiConfig _apiConfig;
 
-  const ShowItemScreen(this._apiConfig, this.collection, this.item, {Key key}) : super(key: key);
+  const ShowItemScreen(this._apiConfig, this.collection, this.item, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +16,7 @@ class ShowItemScreen extends StatelessWidget {
       body: SingleChildScrollView(
           child: FutureBuilder(
               future: DirectusApplicationRepository.getItem(_apiConfig, collection['collection'], item['id']),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
+              builder: (context, AsyncSnapshot<Map<String, dynamic>> snapshot) {
                 if (snapshot.hasError) {
                   return Column(
                     mainAxisSize: MainAxisSize.max,
@@ -31,12 +28,17 @@ class ShowItemScreen extends StatelessWidget {
                     ],
                   );
                 }
-                Map data = snapshot.data;
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                Map<String, dynamic> data = snapshot.data!;
                 Map fields = collection['fields'] ?? {};
                 List<Widget> children = [];
                 print(collection.toString());
                 data.forEach((key, value) {
-                  children.addAll([DirectusWidget(fields[key], value)]);
+                  if (fields[key]?['meta']?['hidden'] != true) {
+                    children.addAll([DirectusWidget(fields[key], value, key: ValueKey(key))]);
+                  }
                 });
                 return Column(
                   mainAxisSize: MainAxisSize.max,

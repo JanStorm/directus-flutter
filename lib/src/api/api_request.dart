@@ -7,21 +7,21 @@ enum RequestMethod { GET, POST, PATCH, DELETE }
 class ApiRequest {
   String host, path;
   dynamic data;
-  Map<String, String> headers;
-  Map<String, String> query;
+  late Map<String, String> headers;
+  late Map<String, String> query;
   RequestMethod method;
 
   ApiRequest(this.host, this.path,
-      {this.data, this.headers, this.query, this.method = RequestMethod.GET}) {
-    this.headers = this.headers ?? {};
-    this.query = this.query ?? {};
+      {this.data, Map<String, String>? headers, Map<String, String>? query, this.method = RequestMethod.GET}) {
+    this.headers = headers ?? {};
+    this.query = query ?? {};
 
     if(this.headers[HttpHeaders.contentTypeHeader] == null) {
       this.headers[HttpHeaders.contentTypeHeader] = 'application/json';
     }
   }
 
-  ApiRequest addFilter(List<ApiFilter> filter) {
+  ApiRequest addFilter(List<ApiFilter>? filter) {
     if (filter != null) {
       List<MapEntry<String, String>> filterEntries;
       filterEntries = filter.map((e) => e.getMapEntry()).toList();
@@ -30,8 +30,10 @@ class ApiRequest {
     return this;
   }
 
-  ApiRequest setAccessToken(String accessToken) {
-    query['access_token'] ??= accessToken;
+  ApiRequest setAccessToken(String? accessToken) {
+    if (accessToken != null) {
+      headers[HttpHeaders.authorizationHeader] = 'Bearer $accessToken';
+    }
     return this;
   }
 
@@ -49,6 +51,6 @@ class ApiRequest {
   }
 
   Uri getUri() {
-    return Uri.https(host, path, query);
+    return Uri.http(host, path, query);
   }
 }

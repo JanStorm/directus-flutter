@@ -6,7 +6,7 @@ class ListCollectionsScreen extends StatelessWidget {
 
   final DirectusApiConfig _apiConfig;
 
-  const ListCollectionsScreen(this._apiConfig, {Key key}) : super(key: key);
+  const ListCollectionsScreen(this._apiConfig, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,7 @@ class ListCollectionsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: FutureBuilder(
             future: DirectusApplicationRepository.getCollections(_apiConfig),
-            builder: (context, snapshot) {
-              if(!snapshot.hasData) {
-                return Center(child: CircularProgressIndicator());
-              }
+            builder: (context, AsyncSnapshot<List> snapshot) {
               if(snapshot.hasError) {
                 return Column(
                   mainAxisSize: MainAxisSize.max,
@@ -28,7 +25,10 @@ class ListCollectionsScreen extends StatelessWidget {
                   ],
                 );
               }
-              List collections = snapshot.data;
+              if(!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+              List collections = snapshot.data!;
               List<Widget> children = collections.map((data) => ListTile(
                 title: Text(data['collection'] ?? 'Keine Bezeichnung'),
                 subtitle: Text(data['note'] ?? ''),

@@ -1,7 +1,7 @@
 /// See filters at https://docs.directus.io/api/query/filter.html
 class ApiFilter {
   final String field;
-  String _operator, _value;
+  String? _operator, _value;
 
   ApiFilter(this.field);
 
@@ -181,7 +181,7 @@ class ApiFilter {
   /// use this function to apply this filter into the queryParameters map
   /// of your request.
   MapEntry<String, String> getMapEntry() {
-    return MapEntry('filter[$field][$_operator]', this._value);
+    return MapEntry('filter[$field][$_operator]', this._value ?? 'No Value set!');
   }
 
   /// Makes toString look like the single get request entry

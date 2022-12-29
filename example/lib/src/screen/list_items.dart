@@ -7,7 +7,7 @@ class ListItemsScreen extends StatelessWidget {
   final Map collection;
   final DirectusApiConfig _apiConfig;
 
-  const ListItemsScreen(this._apiConfig, this.collection, {Key key})
+  const ListItemsScreen(this._apiConfig, this.collection, {Key? key})
       : super(key: key);
 
   @override
@@ -18,10 +18,7 @@ class ListItemsScreen extends StatelessWidget {
             child: FutureBuilder(
                 future:
                     DirectusApplicationRepository.getItems(_apiConfig, collection['collection']),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
-                  }
+                builder: (context, AsyncSnapshot<List> snapshot) {
                   if (snapshot.hasError) {
                     return Column(
                       mainAxisSize: MainAxisSize.max,
@@ -33,7 +30,10 @@ class ListItemsScreen extends StatelessWidget {
                       ],
                     );
                   }
-                  List items = snapshot.data;
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  List items = snapshot.data!;
                   List<Widget> children = items.map((data) => ListTile(
                     title: Text("ID ${data['id']}"),
                     subtitle: Text(data['note'] ?? ''),
@@ -46,6 +46,7 @@ class ListItemsScreen extends StatelessWidget {
                   )).toList();
                   return Column(
                     mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: children,
                   );
                 }))

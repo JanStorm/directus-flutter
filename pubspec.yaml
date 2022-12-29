@@ -4,11 +4,12 @@ version: 0.0.1
 homepage: https://github.com/nws-jstorm/directus-flutter
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.16.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_html: ^2.2.1
   http: ^0.13.5
 
 dev_dependencies:

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:directus_flutter/directus_flutter.dart';
 
 const demoApiConfig = DirectusApiConfig(
-    'demo.directus.io',
-    'thumper',
+    '192.168.2.30:8055',
+    'Directus',
     'admin@example.com',
     'password'
 );
